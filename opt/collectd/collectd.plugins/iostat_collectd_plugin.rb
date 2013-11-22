@@ -59,7 +59,7 @@ HOSTNAME = `hostname`.gsub(/\./, "_")
         if  ( line =~ /^([ ]+\d)/ )
         # %user   %nice %system %iowait  %steal   %idle
             user, nice,  system, iowait, steal, idle = line.split
-            puts "PUTVAL " + HOSTNAME.chomp + "/iostatplugin/gauge/iowait " + "N:" + iowait
+            puts "PUTVAL " + HOSTNAME.chomp + "/iostatplugin/gauge-iowait/iowait " + "N:" + iowait
         end
         
         if  ( line =~ /^(Linux|Time:|avg-cpu|Device| |$)/ )
