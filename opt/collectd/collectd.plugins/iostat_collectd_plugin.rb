@@ -36,6 +36,13 @@
 # Keiran S <Keiran@gmail.com>
 #
 
+#As per the the exec plugin documentation of collectd
+#Without this, the data is not flush at correct interval
+#and bunch of data is ending up with same timestamp
+#Enable auto flush
+STDOUT.sync = true
+
+
 trap("TERM") {cleanup_children_on_exit}
 
 def cleanup_children_on_exit
@@ -48,6 +55,13 @@ HOSTNAME = `hostname`.gsub(/\./, "_")
 
 @output = IO.popen("iostat -Nxk 1")
     while line = @output.gets do
+        #Record the iowait as well...
+        if  ( line =~ /^([ ]+\d)/ )
+        # %user   %nice %system %iowait  %steal   %idle
+            user, nice,  system, iowait, steal, idle = line.split
+            puts "PUTVAL " + HOSTNAME.chomp + "/iostatplugin/gauge/iowait " + "N:" + iowait
+        end
+        
         if  ( line =~ /^(Linux|Time:|avg-cpu|Device| |$)/ )
             #puts "Debug: Skipped line:" + line
         else
